@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant de Téléchargement Vidéo</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#4f46e5',secondary:'#8b5cf6'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            background-color: #f9fafb;
+            font-family: 'Inter', sans-serif;
+        }
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="checkbox"]:checked {
+            background-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 0.25rem;
+            height: 0.5rem;
+            border-bottom: 2px solid white;
+            border-right: 2px solid white;
+        }
+        .custom-select {
+            position: relative;
+        }
+        .custom-select select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 2.5rem;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .custom-select::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid #6b7280;
+            pointer-events: none;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 1.1rem;
+            width: 1.1rem;
+            left: 0.2rem;
+            bottom: 0.2rem;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4f46e5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(1.5rem);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-white shadow-sm">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 flex items-center justify-center bg-primary rounded-full">
+                        <i class="ri-download-2-line text-white ri-lg"></i>
+                    </div>
+                    <h1 class="text-xl font-['Pacifico'] text-gray-800">VDiackoDownload</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="!rounded-button flex items-center space-x-1 text-gray-600 hover:text-gray-900 whitespace-nowrap">
+                        <div class="w-5 h-5 flex items-center justify-center">
+                            <i class="ri-question-line"></i>
+                        </div>
+                        <span>Aide</span>
+                    </button>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Assistant de Téléchargement Vidéo</h2>
+                    <p class="text-gray-600 mb-6">Téléchargez facilement des vidéos depuis YouTube, Facebook, Twitter, TikTok et plus encore.</p>
+                    
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="w-8 h-8 flex items-center justify-center bg-red-100 rounded-full">
+                            <i class="ri-youtube-fill text-red-600"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center bg-blue-100 rounded-full">
+                            <i class="ri-facebook-fill text-blue-600"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center bg-sky-100 rounded-full">
+                            <i class="ri-twitter-x-fill text-sky-600"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center bg-pink-100 rounded-full">
+                            <i class="ri-tiktok-fill text-pink-600"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center bg-purple-100 rounded-full">
+                            <i class="ri-instagram-fill text-purple-600"></i>
+                        </div>
+                        <div class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
+                            <i class="ri-more-fill text-gray-600"></i>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label for="videoUrl" class="block text-sm font-medium text-gray-700 mb-1">URL de la vidéo</label>
+                        <div class="flex">
+                            <input type="text" id="videoUrl" placeholder="Collez l'URL de la vidéo ici" class="flex-grow px-4 py-3 border border-gray-300 rounded-l-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <button id="pasteButton" class="!rounded-button bg-gray-100 border border-gray-300 border-l-0 px-4 py-3 text-gray-700 hover:bg-gray-200 whitespace-nowrap">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-clipboard-line"></i>
+                                </div>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500">Supporte YouTube, Facebook, Twitter, TikTok et plus</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="format" class="block text-sm font-medium text-gray-700 mb-1">Format</label>
+                            <div class="custom-select">
+                                <select id="format" class="w-full px-4 py-3 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="mp4">MP4 (Vidéo)</option>
+                                    <option value="mp3">MP3 (Audio)</option>
+                                    <option value="webm">WebM</option>
+                                    <option value="mkv">MKV</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="quality" class="block text-sm font-medium text-gray-700 mb-1">Qualité</label>
+                            <div class="custom-select">
+                                <select id="quality" class="w-full px-4 py-3 border border-gray-300 rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    <option value="best">Meilleure qualité</option>
+                                    <option value="1080p">1080p</option>
+                                    <option value="720p">720p</option>
+                                    <option value="480p">480p</option>
+                                    <option value="360p">360p</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="subtitles" class="focus:ring-0">
+                            <label for="subtitles" class="text-sm text-gray-700">Télécharger les sous-titres</label>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="playlist" class="focus:ring-0">
+                            <label for="playlist" class="text-sm text-gray-700">Télécharger la playlist complète</label>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="audioOnly" class="focus:ring-0">
+                            <label for="audioOnly" class="text-sm text-gray-700">Audio uniquement</label>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <input type="checkbox" id="thumbnail" class="focus:ring-0">
+                            <label for="thumbnail" class="text-sm text-gray-700">Inclure la miniature</label>
+                        </div>
+                    </div>
+
+                    <button id="downloadButton" class="!rounded-button w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-6 whitespace-nowrap">
+                        Télécharger
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6 mb-8" id="progressContainer" style="display: none;">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-medium text-gray-800">Téléchargement en cours...</h3>
+                        <span class="text-sm text-gray-600" id="progressPercent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                        <div class="bg-primary h-2.5 rounded-full" id="progressBar" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-600 mb-4">
+                        <span id="downloadSpeed">0 MB/s</span>
+                        <span id="remainingTime">--:--</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="text-sm text-gray-600">
+                            <span id="currentSize">0 MB</span> / <span id="totalSize">0 MB</span>
+                        </div>
+                        <button id="cancelButton" class="!rounded-button text-red-600 hover:text-red-800 text-sm font-medium whitespace-nowrap">
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-md p-6" id="resultContainer" style="display: none;">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-green-100 rounded-full mr-4">
+                            <i class="ri-check-line text-green-600 ri-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">Téléchargement terminé</h3>
+                            <p class="text-sm text-gray-600" id="fileName">video.mp4</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-md p-4 mb-4">
+                        <p class="text-sm text-gray-700 mb-1">Emplacement du fichier:</p>
+                        <div class="flex items-center">
+                            <p class="text-sm text-gray-600 mr-2 truncate" id="filePath">/Users/username/Downloads/video.mp4</p>
+                            <button class="!rounded-button text-primary hover:text-primary/80 whitespace-nowrap">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-file-copy-line"></i>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="openFolderButton" class="!rounded-button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 whitespace-nowrap">
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-folder-open-line"></i>
+                                </div>
+                                <span>Ouvrir le dossier</span>
+                            </div>
+                        </button>
+                        <button id="newDownloadButton" class="!rounded-button flex-1 bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 whitespace-nowrap">
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="w-5 h-5 flex items-center justify-center">
+                                    <i class="ri-add-line"></i>
+                                </div>
+                                <span>Nouveau téléchargement</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-lg font-medium text-gray-800 mb-4">Historique des téléchargements</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 flex items-center justify-center bg-red-100 rounded-full mr-3">
+                                        <i class="ri-youtube-fill text-red-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Tutoriel Python avancé</h4>
+                                        <p class="text-sm text-gray-600">youtube.com</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">12 mai 2025</div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 flex items-center justify-center bg-blue-100 rounded-full mr-3">
+                                        <i class="ri-facebook-fill text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Recette de cuisine française</h4>
+                                        <p class="text-sm text-gray-600">facebook.com</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">10 mai 2025</div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 flex items-center justify-center bg-pink-100 rounded-full mr-3">
+                                        <i class="ri-tiktok-fill text-pink-600"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Danse tendance 2025</h4>
+                                        <p class="text-sm text-gray-600">tiktok.com</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-500">8 mai 2025</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-white border-t border-gray-200 py-6">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-sm text-gray-600">© 2025 VDiackoDownloader. Tous droits réservés.</p>
+                    </div>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-600 hover:text-gray-900">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-github-fill"></i>
+                            </div>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-gray-900">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-twitter-x-fill"></i>
+                            </div>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-gray-900">
+                            <div class="w-5 h-5 flex items-center justify-center">
+                                <i class="ri-discord-fill"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadButton = document.getElementById('downloadButton');
+            const progressContainer = document.getElementById('progressContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const downloadSpeed = document.getElementById('downloadSpeed');
+            const remainingTime = document.getElementById('remainingTime');
+            const currentSize = document.getElementById('currentSize');
+            const totalSize = document.getElementById('totalSize');
+            const cancelButton = document.getElementById('cancelButton');
+            const newDownloadButton = document.getElementById('newDownloadButton');
+            const pasteButton = document.getElementById('pasteButton');
+            const videoUrlInput = document.getElementById('videoUrl');
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Paste button functionality
+            pasteButton.addEventListener('click', async function() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    videoUrlInput.value = text;
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                }
+            });
+
+            // Download button functionality
+            downloadButton.addEventListener('click', function() {
+                const url = videoUrlInput.value.trim();
+                if (!url) {
+                    alert('Veuillez entrer une URL valide');
+                    return;
+                }
+                progressContainer.style.display = 'block';
+                simulateDownload();
+            });
+
+            // Cancel button functionality
+            cancelButton.addEventListener('click', function() {
+                progressContainer.style.display = 'none';
+                resetProgress();
+            });
+
+            // New download button functionality
+            newDownloadButton.addEventListener('click', function() {
+                resultContainer.style.display = 'none';
+                videoUrlInput.value = '';
+            });
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('change', function() {
+                document.body.classList.toggle('bg-gray-900');
+                // Add more theme toggle logic here if needed
+            });
+
+            // Simulate download progress
+            function simulateDownload() {
+                let progress = 0;
+                const totalSizeValue = Math.floor(Math.random() * 500) + 100; // Random file size between 100-600 MB
+                totalSize.textContent = totalSizeValue + ' MB';
+                const interval = setInterval(() => {
+                    progress += Math.random() * 5;
+                    if (progress >= 100) {
+                        progress = 100;
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            progressContainer.style.display = 'none';
+                            resultContainer.style.display = 'block';
+                        }, 500);
+                    }
+
+                    progressBar.style.width = progress + '%';
+                    progressPercent.textContent = Math.floor(progress) + '%';
+                    
+                    const currentSizeValue = Math.floor((progress / 100) * totalSizeValue);
+                    currentSize.textContent = currentSizeValue + ' MB';
+                    
+                    const speed = Math.floor(Math.random() * 10) + 1;
+                    downloadSpeed.textContent = speed + ' MB/s';
+                    
+                    const remaining = Math.floor((totalSizeValue - currentSizeValue) / speed);
+                    const minutes = Math.floor(remaining / 60);
+                    const seconds = remaining % 60;
+                    remainingTime.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                }, 200);
+            }
+
+            // Reset progress indicators
+            function resetProgress() {
+                progressBar.style.width = '0%';
+                progressPercent.textContent = '0%';
+                downloadSpeed.textContent = '0 MB/s';
+                remainingTime.textContent = '--:--';
+                currentSize.textContent = '0 MB';
+                totalSize.textContent = '0 MB';
+            }
+        });
+    </script>
+</body>
+</html>
